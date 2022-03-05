@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:learnflutter/widgets/chart.dart';
 
 import './models/transactions.dart';
 import './widgets/transaction_list.dart';
@@ -15,7 +16,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Learning FLutter App',
+      title: 'Personal Expenses',
       theme: ThemeData(
         // This is the theme of your application.
         //
@@ -26,7 +27,17 @@ class MyApp extends StatelessWidget {
         // or simply save your changes to "hot reload" in a Flutter IDE).
         // Notice that the counter didn't reset back to zero; the application
         // is not restarted.
-        primarySwatch: Colors.blue,
+        primarySwatch: Colors.purple,
+        fontFamily: 'Quicksand',
+        appBarTheme: AppBarTheme(
+          textTheme: ThemeData.light().textTheme.copyWith(
+                headline6: TextStyle(
+                  fontFamily: 'OpenSans',
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+        ),
       ),
       home: MyHomePage(),
     );
@@ -78,11 +89,21 @@ class _MyHomePageState extends State<MyHomePage> {
         });
   }
 
+  List<Transaction> get _recentTransactions {
+    return _userTransactions.where((txn) {
+      return txn.date.isAfter(
+        DateTime.now().subtract(
+          const Duration(days: 7),
+        ),
+      );
+    }).toList();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Flutter Learning App"),
+        title: const Text("Personal Expenses"),
         actions: <Widget>[
           IconButton(
             onPressed: () => startAddNewTransaction(context),
@@ -97,9 +118,9 @@ class _MyHomePageState extends State<MyHomePage> {
           children: <Widget>[
             Container(
               width: double.infinity,
-              child: const Card(
-                color: Colors.blue,
-                child: Text('Chart !!'),
+              child: Card(
+                // color: Colors.blue,
+                child: Chart(_recentTransactions),
                 elevation: 5,
               ),
             ),
